@@ -28,8 +28,9 @@ if (Deno.args.length === 1 && Deno.args[0] === "manifest") {
 
 import { toJson } from "https://deno.land/std@0.203.0/streams/mod.ts";
 const { command, params } = await toJson(Deno.stdin.readable) as {
-  command: string, params: { [key: string]: any },
-}
+  command: string;
+  params: { [key: string]: any };
+};
 
 if (command == "show") {
   const markdown = Deno.readTextFileSync(params.path);
@@ -69,8 +70,7 @@ if (command == "show") {
 
   const detail = {
     type: "detail",
-    text: section.trim(),
-    language: "markdown",
+    markdown: section.trim(),
     actions: actions,
   };
 

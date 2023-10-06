@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run -A --ext=ts
 
-if (Deno.args.length === 0) {
+if (Deno.args.length === 1 && Deno.args[0] === "manifest") {
   const manifest = {
     title: "Slides",
     commands: [
@@ -26,7 +26,9 @@ if (Deno.args.length === 0) {
   Deno.exit(0);
 }
 
-const { command, params } = JSON.parse(Deno.args[0]);
+import { toArrayBuffer } from "https://deno.land/std@0.203.0/streams/mod.ts";
+const { command, params } = JSON.parse(new TextDecoder().decode(await toArrayBuffer(Deno.stdin.readable)))
+
 if (command == "show") {
   const markdown = Deno.readTextFileSync(params.path);
 

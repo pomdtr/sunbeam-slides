@@ -1,78 +1,9 @@
-#!/usr/bin/env -S deno run -A --ext=ts
+#!/bin/sh
 
-if (Deno.args.length === 0) {
-  const manifest = {
-    title: "Slides",
-    commands: [
-      {
-        name: "show",
-        title: "Show a slide",
-        mode: "view",
-        params: [
-          {
-            name: "path",
-            type: "string",
-          },
-          {
-            name: "index",
-            type: "string",
-            optional: true,
-          },
-        ],
-      },
-    ],
-  };
-  console.log(JSON.stringify(manifest));
-  Deno.exit(0);
-}
+# check if deno is installed
+if ! command -v deno >/dev/null 2>&1; then
+    echo "deno is not installed"
+    exit 1
+fi
 
-import { toJson } from "https://deno.land/std@0.203.0/streams/mod.ts";
-
-if (Deno.args[0] == "show") {
-  const { params } = await toJson(Deno.stdin.readable) as {
-    params: { index?: number; path: string };
-  };
-
-  const markdown = Deno.readTextFileSync(params.path);
-
-  const sections = markdown.split("\n---\n");
-
-  const index = params.index || 0;
-  const section = sections[index];
-
-  const actions = [];
-  if (index < sections.length - 1) {
-    actions.push({
-      title: "Next",
-      key: "n",
-      onAction: {
-        type: "reload",
-        params: {
-          path: params.path,
-          index: index + 1,
-        },
-      },
-    });
-  }
-  if (index > 0) {
-    actions.push({
-      title: "Previous",
-      key: "p",
-      onAction: {
-        type: "reload",
-        params: {
-          path: params.path,
-          index: index - 1,
-        },
-      },
-    });
-  }
-
-  const detail = {
-    type: "detail",
-    markdown: section.trim(),
-    actions: actions,
-  };
-
-  console.log(JSON.stringify(detail));
-}
+exec deno run -A ./extension.ts "$@"

@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-sunbeam extension install https://github.com/pomdtr/sunbeam-slides
+sunbeam extension install github:pomdtr/sunbeam-slides
 ```
 
 ## Usage
